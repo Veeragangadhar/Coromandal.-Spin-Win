@@ -1,0 +1,666 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Welcome to Coromandel International Limited , kakinada</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;padding:18px;color:white;text-align:center;
+ font-family:Arial,sans-serif;
+ background: linear-gradient(135deg, #25105c, #6c2bd9, #ed5ab3);
+ min-height:100vh;overflow-x:hidden
+}
+.container{max-width:1530px;margin:auto}
+header{padding:18px 5px}
+header h1{
+ color:#ffe18a;font-size:clamp(27px,5vw,47px);
+ margin:5px;text-shadow:0 0 12px #ffbd3e,0 0 30px #ff8a00;
+ letter-spacing:1.5px
+}
+header p{color:#ffecc1;font-size:16px}
+
+.panel{
+ margin:20px auto;padding:25px;
+ border-radius:24px;
+ background:linear-gradient(145deg,#ffffff20,#ffffff08);
+ border:1px solid #ffffff45;
+ box-shadow:0 15px 45px #0007,inset 0 1px 2px #fff3;
+ backdrop-filter:blur(12px)
+}
+h2{color:#ffdf83;margin-top:0}
+
+input{
+ width:min(100%,420px);padding:13px 15px;
+ border:2px solid #edbd53;border-radius:11px;
+ background:#fff;color:#222;font-size:16px;
+ margin:7px 0;outline:none
+}
+button{
+ border:0;border-radius:12px;padding:13px 22px;
+ margin:7px;font-size:15px;font-weight:bold;
+ cursor:pointer;color:#351900;
+ background:linear-gradient(135deg,#fff3a0,#ffc13e,#ff8b00);
+ box-shadow:0 5px 18px #ffae3970;
+ transition:.2s
+}
+button:hover{transform:translateY(-2px);filter:brightness(1.1)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+button.red{background:linear-gradient(135deg,#ff9999,#d52d42);color:white}
+button.green{background:linear-gradient(135deg,#b7ffb5,#32bd65);color:#07391b}
+
+.wheel-area{
+ width:min(440px,88vw);aspect-ratio:1;
+ margin:35px auto 25px;position:relative;
+ filter:drop-shadow(0 15px 18px #0009)
+}
+.outer-rim{
+ position:absolute;inset:0;border-radius:50%;
+ padding:11px;
+ background:conic-gradient(
+  #fff8c7,#9b5c0a,#fff1a1,#b36b0b,
+  #fff9cf,#9c5c0a,#fff0a0,#fff8c7
+ );
+ box-shadow:0 0 0 3px #8e4b08,0 0 25px #ffd15b,
+ inset 0 0 12px #fff;
+}
+.inner-rim{
+ width:100%;height:100%;border-radius:50%;
+ padding:5px;
+ background:linear-gradient(135deg,#fff5c1,#a75d0c,#ffed9a);
+ box-shadow:inset 0 0 14px #5b2b00;
+}
+#wheel{
+ display:block;width:100%;height:100%;border-radius:50%;
+ transform:rotate(0deg);
+}
+.pointer{
+ position:absolute;z-index:5;top:-21px;left:50%;
+ transform:translateX(-50%);
+ width:0;height:0;
+ border-left:22px solid transparent;
+ border-right:22px solid transparent;
+ border-top:53px solid #fff5b5;
+ filter:drop-shadow(0 4px 4px #0009);
+}
+.pointer:after{
+ content:"";position:absolute;left:-8px;top:-51px;
+ width:16px;height:16px;border-radius:50%;
+ background:#fff;border:2px solid #b47715
+}
+.hub{
+ position:absolute;left:50%;top:50%;
+ transform:translate(-50%,-50%);
+ width:19%;aspect-ratio:1;border-radius:50%;
+ display:grid;place-items:center;
+ color:#6a3900;font-size:clamp(13px,3vw,20px);
+ font-weight:1000;
+ background:radial-gradient(circle at 32% 25%,#fffbd7,#ffd35e 42%,#b16a08 90%);
+ border:6px solid #fff1a9;
+ box-shadow:0 0 15px #fff4a6,inset 0 0 9px #9a5000,0 4px 8px #0008;
+ z-index:3
+}
+#spinBtn{
+ padding:17px 48px;border-radius:40px;font-size:21px;
+ animation:glow 1.8s infinite
+}
+@keyframes glow{
+ 0%,100%{box-shadow:0 0 12px #ffc348}
+ 50%{box-shadow:0 0 30px #ffdb65,0 0 48px #ff8a00}
+}
+#message{
+ min-height:32px;font-size:20px;font-weight:bold;
+ color:#ffe17b;margin:15px 0
+}
+.sound-note{font-size:13px;color:#f5dfb3}
+
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{padding:13px 8px;border:1px solid #ffffff25}
+th{background:linear-gradient(120deg,#ffdc70,#e99a21);color:#341b28}
+td{background:#ffffff0d}
+tr:hover td{background:#ffffff20}
+
+.WINNER,.QUALIFIED,.PRIZE-WON{color:#78ff9b;font-weight:bold}
+.LOST,.NOT-QUALIFIED{color:#ff8989;font-weight:bold}
+.QUALITY{color:#78caff;font-weight:bold}
+.AGANAMETICS{color:#ffdb70;font-weight:bold}
+.PENDING{color:#ffe08a;font-weight:bold}
+
+#pointsPanel{display:none}
+.points-info{color:#ffe6ae;font-size:14px;line-height:1.5}
+.points-input{
+ width:min(100%,260px);
+ text-align:center;font-size:24px;font-weight:bold;
+ border:3px solid #f6c65e
+}
+
+#popup{
+ display:none;position:fixed;inset:0;z-index:50;
+ align-items:center;justify-content:center;padding:18px;
+ background:#000b
+}
+.popup-card{
+ width:min(440px,95vw);padding:35px 22px;
+ border:3px solid #ffdf80;border-radius:25px;
+ background:linear-gradient(145deg,#502a82,#151034);
+ box-shadow:0 0 50px #ffc54d;
+ animation:pop .45s ease-out
+}
+@keyframes pop{
+ from{transform:scale(.6);opacity:0}
+ to{transform:scale(1);opacity:1}
+}
+.popup-card h2{font-size:30px}
+#popupResult{font-size:29px;color:#ffe17b;font-weight:bold}
+#popupName{font-size:18px}
+
+.rain{
+ position:fixed;top:-45px;z-index:80;pointer-events:none;
+ animation:fall linear forwards
+}
+@keyframes fall{
+ to{transform:translate3d(var(--drift),110vh,0) rotate(720deg);opacity:.15}
+}
+@media(max-width:600px){
+ body{padding:8px}.panel{padding:15px}
+ th,td{font-size:11px;padding:8px 4px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+ <h1>🌟 Welcome to Coromandel International Limited , kakinada 🌟</h1>
+ <p>🎡 Spin the Wheel • Feel the Magic • Celebrate the Winner! 🎉</p>
+</header>
+
+<section class="panel">
+ <h2>🎡 THE MEGA PRIZE WHEEL</h2>
+ <input id="employeeName" placeholder="Enter Employee Name" autocomplete="off">
+
+ <div class="wheel-area">
+  <div class="pointer"></div>
+  <div class="outer-rim">
+   <div class="inner-rim">
+    <canvas id="wheel" width="800" height="800"></canvas>
+   </div>
+  </div>
+  <div class="hub">SPIN</div>
+ </div>
+
+ <button id="spinBtn">🎡 SPIN NOW!</button>
+ <div id="message"></div>
+ <p class="sound-note">🔊 Realistic ticking sound and celebration music</p>
+ <p class="sound-note">One employee = One spin only</p>
+</section>
+
+<!-- Points entry section -->
+<section class="panel" id="pointsPanel">
+ <h2 id="pointsTitle">🌟 ENTER EMPLOYEE POINTS</h2>
+ <p id="pointsEmployee" class="points-info"></p>
+
+ <input
+  type="number"
+  id="employeePoints"
+  class="points-input"
+  min="0"
+  step="1"
+  placeholder="Enter Points"
+ >
+
+ <p class="points-info">
+  Minimum qualifying points:
+  <strong id="minimumScoreLabel">5</strong>
+ </p>
+
+ <button class="green" id="submitPointsBtn">✓ SUBMIT POINTS</button>
+ <p id="pointsMessage" class="points-info"></p>
+</section>
+
+<section class="panel">
+ <h2>🏆 EMPLOYEE WINNER BOARD 🏆</h2>
+ <table>
+  <thead>
+   <tr>
+    <th>Rank</th>
+    <th>Employee Name</th>
+    <th>Spin Result</th>
+    <th>Points</th>
+    <th>Employee Status</th>
+   </tr>
+  </thead>
+  <tbody id="leaderboard"></tbody>
+ </table>
+ <button class="red" id="resetBtn">RESET ALL RECORDS</button>
+</section>
+
+</div>
+
+<div id="popup">
+ <div class="popup-card">
+  <h2 id="popupTitle">🎉 CONGRATULATIONS!</h2>
+  <p id="popupName"></p>
+  <div id="popupResult"></div>
+  <button id="closePopup">CONTINUE</button>
+ </div>
+</div>
+
+<script>
+const prizes=[
+ {name:"WON",color:"#159d48"},
+ {name:"LOST",color:"#d52d3d"},
+ {name:"QUALITY",color:"#176cc9"},
+ {name:"Agronomy",color:"#e99b16"}
+];
+
+const STORAGE_KEY="coromandalMagicWheelPoints2026";
+const PASS_POINTS=50;
+
+let employees={};
+let rotation=0;
+let spinning=false;
+let activePointsEmployee=null;
+let audio=null;
+let lastTick=-1;
+
+const canvas=document.getElementById("wheel");
+const ctx=canvas.getContext("2d");
+const spinBtn=document.getElementById("spinBtn");
+const message=document.getElementById("message");
+
+function loadData(){
+ try{
+  employees=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");
+  if(!employees||typeof employees!=="object")employees={};
+ }catch(e){employees={}}
+}
+function saveData(){
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(employees));
+}
+function keyOf(name){return name.trim().toLowerCase()}
+
+/* Realistic wheel design */
+function drawWheel(){
+ const c=400,r=370;
+ ctx.clearRect(0,0,800,800);
+ const arc=Math.PI*2/prizes.length;
+
+ ctx.beginPath();
+ ctx.arc(c,c,r+5,0,Math.PI*2);
+ ctx.fillStyle="#6b3c0a";
+ ctx.fill();
+
+ prizes.forEach((p,i)=>{
+  const start=-Math.PI/2+i*arc;
+  const end=start+arc;
+
+  ctx.beginPath();
+  ctx.moveTo(c,c);
+  ctx.arc(c,c,r,start,end);
+  ctx.closePath();
+
+  const grad=ctx.createRadialGradient(c-70,c-85,15,c,c,r);
+  grad.addColorStop(0,lighten(p.color,65));
+  grad.addColorStop(.48,p.color);
+  grad.addColorStop(1,darken(p.color,38));
+  ctx.fillStyle=grad;
+  ctx.fill();
+  ctx.lineWidth=9;
+  ctx.strokeStyle="#fff0b3";
+  ctx.stroke();
+
+  ctx.save();
+  ctx.translate(c,c);
+  ctx.rotate(start+arc/2);
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.shadowColor="#000b";
+  ctx.shadowBlur=9;
+  ctx.fillStyle="#fff";
+  ctx.font="bold "+(p.name.length>8?29:42)+"px Arial";
+  ctx.fillText(p.name,235,0);
+  ctx.restore();
+ });
+
+ // Gold decorative lights
+ for(let i=0;i<32;i++){
+  const a=i*Math.PI*2/32;
+  const x=c+Math.cos(a)*(r-5);
+  const y=c+Math.sin(a)*(r-5);
+  ctx.beginPath();
+  ctx.arc(x,y,9,0,Math.PI*2);
+  const bulb=ctx.createRadialGradient(x-3,y-3,1,x,y,9);
+  bulb.addColorStop(0,"#fff");
+  bulb.addColorStop(.4,"#fff0a0");
+  bulb.addColorStop(1,"#b8790b");
+  ctx.fillStyle=bulb;
+  ctx.fill();
+  ctx.strokeStyle="#a25b00";
+  ctx.lineWidth=2;
+  ctx.stroke();
+ }
+
+ ctx.beginPath();
+ ctx.arc(c,c,66,0,Math.PI*2);
+ ctx.fillStyle="#fff1a4";
+ ctx.fill();
+ ctx.lineWidth=8;
+ ctx.strokeStyle="#a8670a";
+ ctx.stroke();
+}
+
+function lighten(hex,amount){
+ const n=parseInt(hex.slice(1),16);
+ return `rgb(${Math.min(255,(n>>16)+amount)},${Math.min(255,((n>>8)&255)+amount)},${Math.min(255,(n&255)+amount)})`;
+}
+function darken(hex,amount){
+ const n=parseInt(hex.slice(1),16);
+ return `rgb(${Math.max(0,(n>>16)-amount)},${Math.max(0,((n>>8)&255)-amount)},${Math.max(0,(n&255)-amount)})`;
+}
+
+/* Sound */
+function initAudio(){
+ if(!audio){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(AC)audio=new AC();
+ }
+ if(audio&&audio.state==="suspended")audio.resume();
+}
+function tone(freq,duration,volume,type="sine"){
+ if(!audio)return;
+ const osc=audio.createOscillator();
+ const gain=audio.createGain();
+ osc.type=type;
+ osc.frequency.setValueAtTime(freq,audio.currentTime);
+ gain.gain.setValueAtTime(volume,audio.currentTime);
+ gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);
+ osc.connect(gain);
+ gain.connect(audio.destination);
+ osc.start();
+ osc.stop(audio.currentTime+duration);
+}
+function tick(){tone(1000,.055,.075,"square")}
+function winSound(){
+ [523,659,784,1047,1318].forEach((f,i)=>{
+  setTimeout(()=>tone(f,.36,.13),i*150);
+ });
+}
+function loseSound(){
+ tone(330,.22,.10);
+ setTimeout(()=>tone(220,.35,.10),200);
+}
+
+function trackTicks(angle){
+ const slice=360/prizes.length;
+ const current=Math.floor((((angle%360)+360)%360)/slice);
+ if(lastTick===-1)lastTick=current;
+ if(current!==lastTick){
+  tick();
+  lastTick=current;
+ }
+}
+
+/* Leaderboard */
+function renderBoard(){
+ const tbody=document.getElementById("leaderboard");
+ tbody.innerHTML="";
+ const list=Object.values(employees).sort((a,b)=>
+  (a.date||"").localeCompare(b.date||"")
+ );
+
+ list.forEach((emp,index)=>{
+  const tr=document.createElement("tr");
+  const cells=[
+   index+1,
+   emp.name,
+   emp.result||"-",
+   emp.points===undefined?"-":emp.points,
+   emp.status||"PENDING"
+  ];
+  cells.forEach((value,i)=>{
+   const td=document.createElement("td");
+   td.textContent=value;
+   if(i===2)td.className=emp.result||"";
+   if(i===4)td.className=emp.status||"PENDING";
+   tr.appendChild(td);
+  });
+  tbody.appendChild(tr);
+ });
+}
+
+/* Flower, star and emoji rain */
+function celebrationRain(){
+ const emojis=["🌸","🌺","🌼","🌻","🌷","🎉","🎊","✨","⭐","💖","🏆","🥳","🌸","🌺","🌼","🌻","🌷","🎉","🎊","✨","⭐","💖","🏆","🥳"];
+ for(let i=0;i<100;i++){
+  const item=document.createElement("div");
+  item.className="rain";
+  item.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  item.style.left=Math.random()*100+"vw";
+  item.style.fontSize=(19+Math.random()*22)+"px";
+  item.style.animationDuration=(2.5+Math.random()*3)+"s";
+  item.style.setProperty("--drift",(Math.random()*180-90)+"px");
+  document.body.appendChild(item);
+  setTimeout(()=>item.remove(),6000);
+ }
+}
+
+function showPopup(name,result,status){
+ document.getElementById("popupName").textContent=name;
+ document.getElementById("popupResult").textContent=status;
+
+ const title=document.getElementById("popupTitle");
+ if(status==="WINNER"||status==="PRIZE WON"){
+  title.textContent="🎉🏆 CONGRATULATIONS! 🏆🎉";
+  celebrationRain();
+ }
+ else if(status==="WON"){
+  title.textContent="💫 Congratulations!";
+ }else if(status==="LOST"){
+  title.textContent="💫 BETTER LUCK NEXT TIME!";
+ }else{
+  title.textContent="🌟 Answer the question correctly to win";
+ }
+ document.getElementById("popup").style.display="flex";
+}
+
+/* Start spin */
+function spinWheel(){
+ if(spinning)return;
+
+ const name=document.getElementById("employeeName").value.trim();
+ if(!name){
+  message.textContent="⚠️ Please enter employee name!";
+  return;
+ }
+
+ const key=keyOf(name);
+ if(employees[key]){
+  message.textContent="⚠️ This employee has already used their one spin!";
+  return;
+ }
+
+ initAudio();
+ spinning=true;
+ spinBtn.disabled=true;
+ document.getElementById("employeeName").disabled=true;
+ message.textContent="🎡 The wheel is spinning... Good luck!";
+
+ const resultIndex=Math.floor(Math.random()*prizes.length);
+ const slice=360/prizes.length;
+ const target=360-(resultIndex*slice+slice/2);
+ const current=((rotation%360)+360)%360;
+ const delta=(target-current+360)%360;
+ const finalRotation=rotation+360*8+delta;
+ const startRotation=rotation;
+ const change=finalRotation-startRotation;
+ const duration=7200;
+ const startTime=performance.now();
+ lastTick=-1;
+
+ function animate(now){
+  const progress=Math.min((now-startTime)/duration,1);
+  const ease=1-Math.pow(1-progress,5);
+  rotation=startRotation+change*ease;
+  canvas.style.transform=`rotate(${rotation}deg)`;
+  trackTicks(rotation);
+
+  if(progress<1){
+   requestAnimationFrame(animate);
+  }else{
+   rotation=finalRotation;
+   canvas.style.transform=`rotate(${rotation}deg)`;
+   finishSpin(name,key,resultIndex);
+  }
+ }
+ requestAnimationFrame(animate);
+}
+
+/* Save spinner result */
+function finishSpin(name,key,index){
+ const result=prizes[index].name;
+ let status;
+
+ if(result==="Won")status="WINNER";
+ else if(result==="LOST")status="LOST";
+ else status="PENDING";
+
+ employees[key]={
+  name:name,
+  result:result,
+  status:status,
+  date:new Date().toISOString()
+ };
+
+ saveData();
+ renderBoard();
+
+ spinning=false;
+ spinBtn.disabled=false;
+ document.getElementById("employeeName").disabled=false;
+ document.getElementById("employeeName").value="";
+
+ if(result==="WON"){
+  message.textContent="🏆 "+name+" IS THE WINNER!";
+  winSound();
+  showPopup(name,result,"WON");
+}else if(result==="LOST"){
+  message.textContent="😔 "+name+" received LOST.";
+  loseSound();
+  showPopup(name,result,"LOST");
+ }else{
+  message.textContent="🌟 "+name+" - "+result+"! Enter points to qualify.";
+  tone(700,.2,.1);
+  openPointsPanel(key,name,result);
+ }
+}
+
+/* Points entry */
+function openPointsPanel(key,name,result){
+ activePointsEmployee=key;
+
+ document.getElementById("pointsPanel").style.display="block";
+ document.getElementById("pointsTitle").textContent=
+  result+" - ENTER POINTS";
+
+ document.getElementById("pointsEmployee").textContent=
+  "Employee: "+name+" | Spinner result: "+result;
+
+ document.getElementById("employeePoints").value="";
+ document.getElementById("pointsMessage").textContent="";
+ document.getElementById("minimumScoreLabel").textContent=PASS_POINTS;
+
+showPopup(name,result,"");
+ document.getElementById("pointsPanel")
+  .scrollIntoView({behavior:"smooth"});
+}
+
+function submitPoints(){
+ if(!activePointsEmployee)return;
+
+ const field=document.getElementById("employeePoints");
+ const raw=field.value;
+
+ if(raw.trim()===""){
+  alert("Please enter employee points.");
+  return;
+ }
+
+ const points=Number(raw);
+ if(!Number.isFinite(points)||points<0||points>100){
+  alert("Please enter points between 0 and 100.");
+  return;
+ }
+
+ const emp=employees[activePointsEmployee];
+ if(!emp||emp.completed){
+  alert("This employee's points have already been submitted.");
+  return;
+ }
+
+ emp.points=points;
+ emp.completed=true;
+ emp.status=points>=PASS_POINTS?"PRIZE WON":"NOT QUALIFIED";
+ emp.pointsDate=new Date().toISOString();
+
+ saveData();
+ renderBoard();
+
+ document.getElementById("pointsMessage").textContent=
+  points>=PASS_POINTS
+   ?"🎉 Congratulations! Prize awarded!"
+   :"Points below qualifying score. Not qualified.";
+
+ document.getElementById("pointsPanel").style.display="none";
+
+ if(points>=PASS_POINTS){
+  winSound();
+  celebrationRain();
+  message.textContent="🏆 "+emp.name+" QUALIFIED FOR THE PRIZE!";
+  showPopup(emp.name,emp.result,"PRIZE WON");
+ }else{
+  loseSound();
+  message.textContent=emp.name+" did not reach the qualifying points.";
+  showPopup(emp.name,emp.result,"NOT QUALIFIED");
+ }
+
+ activePointsEmployee=null;
+}
+
+/* Button events */
+spinBtn.addEventListener("click",spinWheel);
+
+document.getElementById("submitPointsBtn")
+ .addEventListener("click",submitPoints);
+
+document.getElementById("closePopup").addEventListener("click",()=>{
+ document.getElementById("popup").style.display="none";
+});
+
+document.getElementById("resetBtn").addEventListener("click",()=>{
+ if(!confirm("Are you sure you want to delete all employee records?"))return;
+
+ employees={};
+ saveData();
+ renderBoard();
+
+ document.getElementById("message").textContent="All employee records cleared.";
+ document.getElementById("pointsPanel").style.display="none";
+ document.getElementById("employeeName").value="";
+ document.getElementById("employeeName").disabled=false;
+ spinBtn.disabled=false;
+ activePointsEmployee=null;
+ document.getElementById("popup").style.display="none";
+});
+
+loadData();
+drawWheel();
+renderBoard();
+</script>
+</body>
+</html>
